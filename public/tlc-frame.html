@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>TLC runtime</title>
+  </head>
+  <body>
+    <script>
+      const send = (type, data = {}) =>
+        parent.postMessage(
+          { channel: "fieldnotes-tlc", type, ...data },
+          location.origin,
+        );
+      let running = false;
+      const script = document.createElement("script");
+      script.src = "https://cjrtnc.leaningtech.com/4.3/loader.js";
+      script.onerror = () =>
+        send("error", {
+          message:
+            "The CheerpJ CDN could not be reached. Check your connection or download the files to run TLC locally.",
+        });
+      script.onload = async () => {
+        try {
+          await cheerpjInit({
+            version: 11,
+            status: "none",
+            javaProperties: ["java.awt.headless=true"],
+          });
+          const classpath = ["fieldnotes-runner.jar", "tla2tools-1.8.0.jar"]
+            .map(
+              (name) =>
+                `/app${new URL(`vendor/${name}`, location.href).pathname}`,
+            )
+            .join(":");
+          const lib = await cheerpjRunLibrary(classpath);
+          const Runner = await lib.FieldnotesRunner;
+          window.addEventListener("message", async (event) => {
+            if (
+              event.source !== parent ||
+              event.origin !== location.origin ||
+              event.data?.type !== "run" ||
+              running
+            )
+              return;
+            running = true;
+            try {
+              const output = await Runner.run(event.data.spec, event.data.cfg);
+              send("result", { output: String(output) });
+            } catch (error) {
+              send("error", { message: String(error) });
+            }
+          });
+          send("ready");
+        } catch (error) {
+          send("error", { message: String(error) });
+        }
+      };
+      document.head.append(script);
+    </script>
+  </body>
+</html>

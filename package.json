@@ -1,0 +1,44 @@
+{
+  "name": "tilapias",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build",
+    "build:pages": "npm run build -- --base=/tilapias/",
+    "preview": "vite preview --host 0.0.0.0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:tlc": "node --experimental-strip-types scripts/check-lessons.ts",
+    "test:ui": "playwright test",
+    "test:pages": "playwright test --config=playwright.pages.config.ts",
+    "format": "prettier --write src tests e2e scripts .github *.config.ts java/*.java public/tlc-frame.html index.html README.md --ignore-unknown",
+    "format:check": "prettier --check src tests e2e scripts .github *.config.ts public/tlc-frame.html index.html README.md",
+    "lint": "eslint src tests e2e scripts *.config.ts"
+  },
+  "dependencies": {
+    "@codemirror/commands": "^6.8.1",
+    "@codemirror/language": "^6.11.0",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.36.5",
+    "@lezer/highlight": "^1.2.1",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^9.25.0",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.25.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.30.1",
+    "vite": "^6.3.0",
+    "vitest": "^3.1.1"
+  }
+}
