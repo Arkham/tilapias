@@ -117,11 +117,14 @@ export const lessons: Lesson[] = [
       "In ordinary code, statements run in an order. In TLA+, an action is a condition on a pair of states.",
     paragraphs: [
       "The prime in x' refers to the next state. x' = x + 1 does not assign to x; it says which next states are allowed. A guard such as x < 2 narrows those possibilities.",
-      "The two lines joined by /\\ must both hold. Inc permits an increment below two. Reset permits a return to zero at two. Next allows either action.",
+      "The two conditions joined by /\\ are called conjuncts: both must hold. Inc permits an increment below two. Reset permits a return to zero at two. Next allows either action.",
     ],
     notation: [
       { code: "x' = x + 1", meaning: "Next x is current x plus one." },
-      { code: "/\\", meaning: "AND: both conditions must hold." },
+      {
+        code: "/\\",
+        meaning: "AND, also called conjunction: both conditions must hold.",
+      },
       { code: "\\/", meaning: "OR: either action may occur." },
       {
         code: "==",
