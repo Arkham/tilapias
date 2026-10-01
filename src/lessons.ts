@@ -253,13 +253,12 @@ TypeOK == x \in 0..2
     task: "Give each deposit its own guard so that neither can leave 0..3. Keep both choices available where they fit.",
     hints: [
       "A one-unit deposit is safe below 3. A two-unit deposit is safe below 2.",
-      "Write Next as an OR of two guarded actions, plus Reset.",
+      "Write Deposit as an OR of two guarded actions. Leave Next == Deposit \\/ Reset unchanged.",
     ],
-    solution: String.raw`Next == \/ /\ x < 3
-           /\ x' = x + 1
-        \/ /\ x < 2
-           /\ x' = x + 2
-        \/ Reset`,
+    solution: String.raw`Deposit == \/ /\ x < 3
+              /\ x' = x + 1
+           \/ /\ x < 2
+              /\ x' = x + 2`,
     takeaway:
       "Nondeterminism models what could happen. An invariant must survive every allowed choice, not just the friendly ones.",
     deeper: [

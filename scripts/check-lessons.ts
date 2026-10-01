@@ -72,7 +72,10 @@ try {
   variant(2, lessons[2].spec.replace("x <= 2", "x < 2"), "success");
   variant(
     3,
-    lessons[3].spec.replace("Next == Deposit \\/ Reset", lessons[3].solution),
+    lessons[3].spec.replace(
+      /Deposit ==[\s\S]*?(?=\nReset ==)/,
+      lessons[3].solution,
+    ),
     "success",
   );
   variant(
