@@ -33,6 +33,66 @@ test("edit, save, restore across navigation and reload", async ({ page }) => {
   await expect(editor).toContainText("Init == x = 1");
 });
 
+test("lesson disclosures reset on navigation but stay open while taking notes", async ({
+  page,
+}) => {
+  await page.goto("/#states");
+  const disclosures = page.locator(".lesson-body details");
+  await expect(disclosures).toHaveCount(5);
+  await expect(page.locator(".lesson-body details[open]")).toHaveCount(0);
+
+  for (const { id, navigate } of [
+    {
+      id: "actions",
+      navigate: () =>
+        page
+          .getByRole("button", { name: "NEXT IDEA Action", exact: true })
+          .click(),
+    },
+    {
+      id: "states",
+      navigate: () =>
+        page
+          .getByRole("button", { name: "Previous lesson", exact: true })
+          .click(),
+    },
+    {
+      id: "choices",
+      navigate: async () => {
+        await page
+          .locator("summary")
+          .filter({ hasText: "02 · Model real choices" })
+          .click();
+        await page
+          .getByRole("button", { name: "04 Nondeterminism", exact: true })
+          .click();
+      },
+    },
+    {
+      id: "invariants",
+      navigate: () =>
+        page.evaluate(() => {
+          location.hash = "invariants";
+        }),
+    },
+  ]) {
+    for (const disclosure of await disclosures.all()) {
+      await disclosure.locator("summary").click();
+      await expect(disclosure).toHaveJSProperty("open", true);
+    }
+    await page.getByLabel("What surprised you?").fill("My prediction.");
+    await expect(page.locator(".lesson-body details[open]")).toHaveCount(5);
+
+    await navigate();
+    await expect(page).toHaveURL(new RegExp(`#${id}$`));
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      lessons.find((lesson) => lesson.id === id)!.title,
+    );
+    await expect(disclosures).toHaveCount(5);
+    await expect(page.locator(".lesson-body details[open]")).toHaveCount(0);
+  }
+});
+
 test("checks a proof, invalidates edited output, and produces a countervaluation", async ({
   page,
 }) => {

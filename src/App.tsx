@@ -1031,7 +1031,11 @@ export default function App() {
         </section>
 
         <div className={`lesson-layout ${scratch ? "scratch-layout" : ""}`}>
-          <section className="lesson-body" aria-label="Lesson explanation">
+          <section
+            key={id}
+            className="lesson-body"
+            aria-label="Lesson explanation"
+          >
             {!scratch ? (
               <>
                 <div className="section-label">
